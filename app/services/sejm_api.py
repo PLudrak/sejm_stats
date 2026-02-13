@@ -31,21 +31,14 @@ def fetch_votings(sitting: int):
     return r.json()
 
 
+def map_voting_list(data):
+    return [{"voting_no": v["votingNumber"], "sitting": v["sitting"]} for v in data]
+
+
 def fetch_voting_details(sitting: int, voting: int):
     r = requests.get(f"{SEJM_URL}/votings/{sitting}/{voting}")
     r.raise_for_status()
     return r.json()
-
-
-def map_voting_list(data):
-    return [
-        {
-            "voting_no": v["votingNumber"],
-            "sitting": v["sitting"],
-            "kind": v["kind"],
-        }
-        for v in data
-    ]
 
 
 def map_voting_details(sitting: int, voting_no: int, details: dict):
