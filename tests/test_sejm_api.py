@@ -6,7 +6,7 @@ from app.services.sejm_api import (
     fetch_votings,
     fetch_voting_details,
     map_voting_details,
-    map_voting_list,
+    get_all_voting_results,
     SEJM_URL,
 )
 
@@ -106,8 +106,8 @@ def test_fetch_voting_details_calls_correct_url(mock_get):
 def test_map_voting_details():
     details = {
         "votes": [
-            {"MP": "Jan Kowalski", "vote": "YES"},
-            {"MP": "Anna Nowak", "vote": "NO"},
+            {"MP": "1", "vote": "YES"},
+            {"MP": "2", "vote": "NO"},
         ]
     }
 
@@ -117,8 +117,8 @@ def test_map_voting_details():
         "sitting": 1,
         "voting": 4,
         "votes": {
-            "Jan Kowalski": "YES",
-            "Anna Nowak": "NO",
+            "1": "YES",
+            "2": "NO",
         },
     }
 
@@ -127,7 +127,7 @@ def test_map_voting_details():
 @patch("app.services.sejm_api.fetch_votings")
 def test_get_all_voting_results(mock_fetch_votings, mock_fetch_voting_details):
 
-    # 1️⃣ API zwraca listę głosowań
+    # all votings of the sitting
     mock_fetch_votings.return_value = [
         {
             "votingNumber": 4,
@@ -136,11 +136,11 @@ def test_get_all_voting_results(mock_fetch_votings, mock_fetch_voting_details):
         }
     ]
 
-    # 2️⃣ API zwraca szczegóły dla jednego głosowania
+    # details of the voting
     mock_fetch_voting_details.return_value = {
         "votes": [
-            {"MP": "Jan Kowalski", "vote": "YES"},
-            {"MP": "Anna Nowak", "vote": "NO"},
+            {"MP": "1", "vote": "YES"},
+            {"MP": "2", "vote": "NO"},
         ]
     }
 
@@ -151,8 +151,8 @@ def test_get_all_voting_results(mock_fetch_votings, mock_fetch_voting_details):
             "sitting": 1,
             "voting": 4,
             "votes": {
-                "Jan Kowalski": "YES",
-                "Anna Nowak": "NO",
+                "1": "YES",
+                "2": "NO",
             },
         }
     ]
